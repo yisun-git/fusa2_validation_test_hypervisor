@@ -581,6 +581,9 @@ void init_vmcs(struct acrn_vcpu *vcpu)
 	init_guest_state(vcpu);
 	init_entry_ctrl(vcpu);
 	init_exit_ctrl(vcpu);
+
+        if (is_x2apic_enabled(&vcpu->arch.vlapic))
+            switch_apicv_mode_x2apic(vcpu);
 }
 
 /**
