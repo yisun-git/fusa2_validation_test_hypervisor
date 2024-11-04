@@ -12,7 +12,7 @@
 #include <vm_configurations.h>
 
 /* TODO: MAX_MMAP_ENTRIES shall be config by config tool, and same as E820_MAX_ENTRIES */
-#define MAX_MMAP_ENTRIES		32U
+#define MAX_MMAP_ENTRIES		64U
 
 #define MAX_BOOTARGS_SIZE		2048U
 #define MAX_LOADER_NAME_SIZE		32U
