@@ -503,6 +503,13 @@ static int32_t write_cfg_header(struct pci_vdev *vdev,
 	int32_t ret = 0;
 	uint32_t pt_mask, ro_mask;
 
+	if (vdev->pdev->bdf.bits.b == 0 &&
+	    vdev->pdev->bdf.bits.d == 0 &&
+	    vdev->pdev->bdf.bits.f == 0) {
+		pr_info("%s: write to hostbridge is ignored.\n", __func__);
+		return ret;
+	}
+
 	if ((offset == PCIR_BIOS) && is_quirk_ptdev(vdev)) {
 		/* the access of PCIR_BIOS is emulated for quirk_ptdev */
 		ret = -ENODEV;

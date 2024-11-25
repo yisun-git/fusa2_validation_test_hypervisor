@@ -37,6 +37,7 @@
 #include <pci.h>
 #include "vpci_priv.h"
 #include <vacpi.h>
+#include <logmsg.h>
 
 /**
  * @addtogroup vp-dm_vperipheral
@@ -267,9 +268,17 @@ static int32_t read_vhostbridge_cfg(struct pci_vdev *vdev, uint32_t offset,
 static int32_t write_vhostbridge_cfg(struct pci_vdev *vdev, uint32_t offset,
 	uint32_t bytes, uint32_t val)
 {
+#if 0
 	if (!is_bar_offset(PCI_BAR_COUNT, offset)) {
 		pci_vdev_write_vcfg(vdev, offset, bytes, val);
 	}
+#endif
+
+	/* Ignore write to hostbridge per FuSa SRS */
+	if (vdev != NULL && vdev->pdev != NULL)
+		pr_info("%s: Ignore write to dev %x:%x.%x reg 0x%x bytes %d val 0x%x.\n",
+			__func__, vdev->pdev->bdf.bits.b, vdev->pdev->bdf.bits.d, vdev->pdev->bdf.bits.f,
+			offset, bytes, val);
 	return 0;
 }
 
