@@ -154,6 +154,7 @@
 #define PCIM_MSICTRL_MSI_ENABLE  0x01U
 #define PCIR_MSI_ADDR         0x4U
 #define PCIR_MSI_ADDR_HIGH    0x8U
+#define PCIR_MSI_ADDR_MASK    0xFEE00000U
 #define PCIR_MSI_DATA         0x8U
 #define PCIR_MSI_DATA_64BIT   0xCU
 #define PCIR_MSI_MASK         0x10U

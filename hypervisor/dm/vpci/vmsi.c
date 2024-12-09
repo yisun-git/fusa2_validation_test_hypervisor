@@ -102,8 +102,9 @@ static void remap_vmsi(const struct pci_vdev *vdev)
 void write_vmsi_cap_reg(struct pci_vdev *vdev, uint32_t offset, uint32_t bytes, uint32_t val)
 {
 	/* Capability ID, Next Capability Pointer and Message Control
-	 * (Except MSI Enable bit and Multiple Message Enable) are RO */
-	static const uint8_t msi_ro_mask[0xEU] = { 0xffU, 0xffU, 0x8eU, 0xffU };
+	 * (Except MSI Enable bit and Multiple Message Enable) and Message Address
+	 * bit[31:20]/bit[11:4]/bit[1:0] are RO */
+	static const uint8_t msi_ro_mask[0xEU] = { 0xffU, 0xffU, 0x8eU, 0xffU, 0xf3, 0x0f, 0xf0, 0xff, 0xff, 0xff, 0xff, 0xff };
 	uint32_t msgctrl, old, ro_mask = ~0U;
 
 	(void)memcpy_s((void *)&ro_mask, bytes, (void *)&msi_ro_mask[offset - vdev->msi.capoff], bytes);
@@ -151,6 +152,12 @@ void init_vmsi(struct pci_vdev *vdev)
 		val &= ~((uint32_t)PCIM_MSICTRL_MME_MASK << 16U);
 
 		pci_vdev_write_vcfg(vdev, vdev->msi.capoff, 4U, val);
+
+		/* Init Message Address to have 0xFEE00000 per SDM */
+		val = pci_pdev_read_cfg(pdev->bdf, vdev->msi.capoff + PCIR_MSI_ADDR, 4U);
+		val |= PCIR_MSI_ADDR_MASK;
+		pci_vdev_write_vcfg(vdev, vdev->msi.capoff + PCIR_MSI_ADDR, 4U, val);
+		val = pci_vdev_read_vcfg(vdev, vdev->msi.capoff + PCIR_MSI_ADDR, 4);
 	}
 }
 
